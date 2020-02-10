@@ -87,9 +87,10 @@ class Login extends Component{
                 <button type="button" className="close" data-dismiss="alert" aria-label="Close" onClick={this.resetLoginFailed}>
                 <span aria-hidden="true">×</span>
                 </button>                
-                <h4 className="alert-heading">Sorry! Your Login Failed.</h4>
-
-                <a href="#!" className="alert-link" onClick={this.sendNewPassword}><u>We can send you a fresh password at the above email.</u></a>
+                <h5>Sorry! Your Login Failed.</h5>
+                <a href="#" onClick={this.sendNewPassword}>
+                    <u>We can send you a fresh password at the above email.</u>
+                </a>
             </div>               
         )
     }
@@ -99,7 +100,7 @@ class Login extends Component{
                 <button type="button" className="close" data-dismiss="alert" aria-label="Close" onClick={this.resetNewPasswordSent}>
                 <span aria-hidden="true">×</span>
                 </button>                
-                <h4 className="alert-heading">New Password Sent!</h4>
+                <h5>New Password Sent!</h5>
                 <p>
                     Remember to change it on your next login!
                 </p>
@@ -114,24 +115,32 @@ class Login extends Component{
         } else if(this.state.newPasswordSent){
             loginStatusMarkup = this.newPasswordSentMarkup();
         }
+
         return(
-            <main role="main" className="inner  mt-3">
-            <h1 className=" text-white">WELCOME</h1>
-            {/* <p className="lead mt-3 text-white">Bid for drinks at the coolest Bars.</p> */}
-            {/* <p className="lead mt-3 text-white"></p> */}
-            <div className="lead">
-            <form className="form-signin mt-3">
-              <input onChange={this.updateEmail} value={this.state.email} type="email" id="inputEmail" className="form-control mt-2" placeholder="Email address" required autoFocus/>
-              <input onChange={this.updatePassword} value={this.state.password} type="password" id="inputPassword" className="form-control mt-3" placeholder="Password" required/>
-              <button type="button" className="btn btn-primary mt-3 btn-lg " onClick={this.login}>
-                Login
-              </button>
-              {loginStatusMarkup}
-              <p className="mt-1"><a href="#" className="text-primary" onClick={this.props.displayRegistration}>Sign Up</a></p>
-            </form>
+            <div className="container pt-5">
+            <h2>Login</h2>
+            <form>
+            <div className="form-group mt-4">
+                <label htmlFor="inputEmail">Email address</label>
+                <input onChange={this.updateEmail} value={this.state.email} type="email" id="inputEmail" className="form-control" placeholder="Email address" required autoFocus/>
             </div>
-          </main>
-        );
+            <div className="form-group">
+                <label htmlFor="inputPassword">Password</label>
+                <input onChange={this.updatePassword} value={this.state.password} type="password" id="inputPassword" className="form-control" placeholder="Password" required/>
+            </div>
+            <button type="button" className="btn btn-primary btn-lg " onClick={this.login}>
+                Login
+            </button>
+            <div className="form-group">
+            {loginStatusMarkup}
+            </div>  
+            <div className="form-group">
+            <a href="#"  onClick={this.props.displayRegistration}>Sign Up</a>
+            </div>         
+            </form> 
+            </div>           
+        )
+
     }
 }
 
