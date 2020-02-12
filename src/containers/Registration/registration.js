@@ -65,17 +65,35 @@ class Registration extends Component{
 
     render(){
         return (
-            <form className="form-signin">
-            <h1 className="text-white">REGISTRATION</h1>
-            <input onChange={this.updateName} value={this.state.name} type="input" id="inputName" className="form-control mt-4" placeholder="Name" required autoFocus/>            
-            <input onChange={this.updateEmail} value={this.state.email} type="email" id="inputEmail" className="form-control mt-2" placeholder="Email address" required />
-            <input onChange={this.updatePassword} value={this.state.password} type="password" id="inputPassword" className="form-control mt-2" placeholder="Password" required/>
-            <input onChange={this.updateConfirmPassword} value={this.state.confirmPassword} type="password" id="inputPasswordConfirm" className="form-control mt-2" placeholder="Confirm Password" required/>
+            <div className="container pt-5 pb-3">
+            <h2>Sign up</h2>
+            <form>
+            <div className="form-group mt-4">
+            <label htmlFor="inputEmail">Email address</label>
+            <input onChange={this.updateEmail} value={this.state.email} type="email" id="inputEmail" className="form-control" placeholder="Email address" required />
+            </div>
+
+            <div className="form-group">
+            <label htmlFor="inputName">Name</label>
+            <input onChange={this.updateName} value={this.state.name} type="input" id="inputName" className="form-control" placeholder="Name" required autoFocus/>            
+            </div>
+            
+            <div className="form-group">
+            <label htmlFor="inputPassword">Password</label>
+            <input onChange={this.updatePassword} value={this.state.password} type="password" id="inputPassword" className="form-control" placeholder="Password" required/>            
+            </div>
+            
+            <div className="form-group">
+            <label htmlFor="inputPasswordConfirm">Confirm Password</label>
+            <input onChange={this.updateConfirmPassword} value={this.state.confirmPassword} type="password" id="inputPasswordConfirm" className="form-control" placeholder="Confirm Password" required/>
+            </div>
+            
             <div className="text-danger" role="alert">{this.state.validation}</div>
-            <button className="btn btn-primary mt-2 btn-lg mt-3" onClick={this.register}>
+            <button className="btn btn-primary btn-lg" onClick={this.register}>
               Submit
             </button>
-          </form>      
+          </form>    
+          </div>  
           );
     }
 
