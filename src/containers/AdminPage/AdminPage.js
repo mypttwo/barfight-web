@@ -73,8 +73,8 @@ class AdminPage extends Component {
 
   getNavBar = () => {
     return (
-      <nav className="navbar navbar-expand-lg navbar-dark bg-danger">
-        <a className="navbar-brand text-white" href="#">{d.appTitle}</a>
+      <nav className="navbar navbar-expand-lg">
+        <a className="navbar-brand" href="#">{d.appTitle}</a>
         <button
           className="navbar-toggler"
           type="button"
@@ -90,10 +90,10 @@ class AdminPage extends Component {
         <div className="collapse navbar-collapse" id="navbarColor01">
           <ul className="navbar-nav mr-auto">
             <li className="nav-item">
-              <a className="nav-link text-white" href="#" onClick={this.displayAllBarAdmins}>All Bar Admins</a>
+              <a className="nav-link" href="#" onClick={this.displayAllBarAdmins}>All Bar Admins</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-white" href="#" onClick={this.displayNewBarAdmin}>New Bar Admin</a>
+              <a className="nav-link" href="#" onClick={this.displayNewBarAdmin}>New Bar Admin</a>
             </li>            
           </ul>
           <form className="form-inline my-2 my-lg-0">

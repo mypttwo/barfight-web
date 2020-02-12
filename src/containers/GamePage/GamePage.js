@@ -1,11 +1,15 @@
 import React, { Component } from "react";
+import {Link} from 'react-router-dom';
 import axios from "axios";
-import moment from 'moment';
+import io from "socket.io-client";
 import { Button, Modal, ModalHeader, ModalBody, ModalFooter } from 'reactstrap';
 
 import { server } from "../../config";
 import d from "../../utils/dictionary";
 import MySettings from "../MySettings/mySettings";
+import {appName} from '../../config';
+import withBidsFeedContext from "../../hocs/withBidsFeedContext";
+import getAuctionRows from "../../components/auctionListRows";
 
 class GamePage extends Component {
   displayHome = () => {
@@ -85,6 +89,11 @@ class GamePage extends Component {
 
   componentDidMount() {
     this.loadAllAuctions();
+    this.socket = io(server);
+    this.socket.on('bidsUpdate', (updates) => {
+      console.log(updates);
+      this.loadAllAuctions();         
+  });
   }
 
   loadAllAuctions = () => {
@@ -102,42 +111,30 @@ class GamePage extends Component {
 
   getNavBar = () => {
     return (
-      <nav className="navbar navbar-expand-lg navbar-dark bg-dark">
-        
-          <img src="images/l11.png" />
-        
-        <button
-          className="navbar-toggler"
-          type="button"
-          data-toggle="collapse"
-          data-target="#navbarColor01"
-          aria-controls="navbarColor01"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
-        >
-          <span className="navbar-toggler-icon" />
-        </button>
-
-        <div className="collapse navbar-collapse" id="navbarColor01">
-          <ul className="navbar-nav mr-auto">
-            <li className="nav-item">
-              <a className="nav-link text-white" href="#" onClick={this.displayMySettings}>
-                My Settings
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link text-white" href="#" onClick={this.displayRecent}>
-                Recent Auctions
-              </a>
-            </li>
-            <li className="nav-item">
-              <a className="nav-link text-white" href="#" onClick={this.displayLive}>
-                Live Auctions
-              </a>
-            </li>
-          </ul>
-          <form className="form-inline my-2 my-lg-0">
-            {/* <input className="form-control mr-sm-2" placeholder="Search" type="text" /> */}
+      <nav className="navbar navbar-expand-lg  navbar-dark bg-dark">
+          <Link className="navbar-brand" to="/" >{appName}</Link>
+          <button className="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navb">
+          <span className="navbar-toggler-icon"></span>
+          </button>
+          <div id="navb" className="navbar-collapse collapse hide">
+            <ul className="navbar-nav mr-auto">
+              <li className="nav-item">
+                <a className="nav-link" href="#" onClick={this.displayMySettings}>
+                  My Settings
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="#" onClick={this.displayRecent}>
+                  Recent / Upcoming Auctions
+                </a>
+              </li>
+              <li className="nav-item">
+                <a className="nav-link" href="#" onClick={this.displayLive}>
+                  Live Auctions
+                </a>
+              </li>
+            </ul>
+            <form className="form-inline my-2 my-lg-0">
             <button
               className="btn btn-danger my-2 my-sm-0"
               type="button"
@@ -146,11 +143,13 @@ class GamePage extends Component {
               Exit
             </button>
           </form>
-        </div>
-      </nav>
-    );
-  };
 
+          </div>
+      </nav>       
+  )
+  }
+ 
+  socket = null;
   bid = (auctionId,currentBidVal) => {
     let headers = {
       "Content-Type": "application/json",
@@ -172,6 +171,10 @@ class GamePage extends Component {
       this.setState({
         bidStatus : response.status
       });
+      if(this.state.bidStatus == 200){
+        this.socket = io(server);
+        this.socket.emit('update');
+      }
       this.toggle();        
       this.loadAllAuctions();
     })
@@ -201,45 +204,7 @@ class GamePage extends Component {
   }
 
   renderAuctionList = (auctionList) => {
-    let markup = auctionList.map((auction) => {
-      let start = '';
-      if(auction.start){
-          start = moment(auction.start).format('dddd DD/MM/YYYY h:mm A');
-      }
-      let end = '';
-      if(auction.start){
-          end = moment(auction.end).format('dddd DD/MM/YYYY h:mm A');
-      }
-      
-      let currentBidVal = auction.currentBid + auction.bidStep;
-      let bidLabel = "Winning Bid";
-      let action = '';
-      let now = new Date();
-      if(now > new Date(auction.start) && now < new Date(auction.end)){
-      //if(true) {  
-        bidLabel = "Current Bid";
-        action = (
-          <button type="button" onClick={()=>this.bid(auction._id, currentBidVal)} className="btn btn-outline-primary btn-sm">Bid Rs {currentBidVal}</button>
-        )
-      }
-     
-      return (<div className="card text-center mb-3 bg-dark text-white" key={auction._id}>
-      <div className="card-header">{auction.bar}</div>
-      <img
-        className="card-img-top"
-        src="/images/c6.jpg"
-        alt={auction.bar}
-      />
-      <div className="card-body">
-        <h5 className="card-title">{auction.prize}</h5>
-        <p><small className="text-muted">Start : {start}</small></p>
-        <p><small className="text-muted">End : {end}</small></p>
-        <p><small className="text-muted">Start Bid : Rs {auction.startBid},Step : Rs {auction.bidStep}</small></p>
-        <p className="card-text">{bidLabel} : Rs {auction.currentBid}</p>
-        {action}
-      </div>
-    </div>);
-    })
+    let markup = getAuctionRows(auctionList, 3, this.bid);
     return markup;
   }
 
@@ -255,23 +220,23 @@ class GamePage extends Component {
     let title = '';
     switch (this.state.display) {
       case this.RECENT:
-        title = 'Recent Auctions'
+        title = 'Recent / Upcoming Auctions'
         break;
       case this.RECENT:
         title = 'Live Auctions'
         break;  
       case this.MYSETTINGS:
-        title = ''
+        title = 'Settings'
         break;          
       default:
        title = 'Live Auctions'
         break;
     }
     return (
-      <div>
+      <React.Fragment>
         {this.getNavBar()}
         <div className="container mt-3">
-        <p className='lead'>{title}</p>
+        <h2>{title}</h2>
           {this.display()} 
         </div>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={this.props.className}>
@@ -281,9 +246,9 @@ class GamePage extends Component {
             <Button color="primary" onClick={this.toggle}>OK</Button>{' '}
           </ModalFooter>
         </Modal>        
-      </div>
+      </React.Fragment>
     );
   }
 }
 
-export default GamePage;
+export default withBidsFeedContext(GamePage);

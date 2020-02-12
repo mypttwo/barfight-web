@@ -1,9 +1,12 @@
 import React, { Component } from "react";
+import {Link} from 'react-router-dom';
 
 import NewAuction from '../NewAuction/newAuction';
 import AuctionList from '../AuctionList/auctionList';
 import MySettings from "../MySettings/mySettings";
+import {appName} from '../../config';
 import UpdateAuction from '../UpdateAuction/updateAuction';
+
 
 import d from '../../utils/dictionary';
 
@@ -106,16 +109,13 @@ class AuctionPage extends Component {
 
   getNavBar = () => {
     return (
-      <nav className="navbar navbar-expand-lg navbar-dark bg-danger">
-        <img src="images/l11.png" />
+      <nav className="navbar navbar-expand-lg  navbar-dark bg-dark">
+        <Link className="navbar-brand" to="/" >{appName}</Link>
         <button
           className="navbar-toggler"
           type="button"
           data-toggle="collapse"
           data-target="#navbarColor01"
-          aria-controls="navbarColor01"
-          aria-expanded="false"
-          aria-label="Toggle navigation"
         >
           <span className="navbar-toggler-icon" />
         </button>
@@ -123,16 +123,16 @@ class AuctionPage extends Component {
         <div className="collapse navbar-collapse" id="navbarColor01">
           <ul className="navbar-nav mr-auto">
           <li className="nav-item">
-              <a className="nav-link text-white" href="#" onClick={this.displayMySettings}>MySettings</a>
+              <a className="nav-link" href="#" onClick={this.displayMySettings}>MySettings</a>
             </li>          
           <li className="nav-item">
-              <a className="nav-link text-white" href="#" onClick={this.displayCurrentAuctions}>Current Auctions</a>
+              <a className="nav-link" href="#" onClick={this.displayCurrentAuctions}>Current Auctions</a>
             </li>          
             <li className="nav-item">
-              <a className="nav-link text-white" href="#" onClick={this.displayAllAuctions}>All Auctions</a>
+              <a className="nav-link" href="#" onClick={this.displayAllAuctions}>All Auctions</a>
             </li>
             <li className="nav-item">
-              <a className="nav-link text-white" href="#" onClick={this.displayNewAuction}>New Auction</a>
+              <a className="nav-link" href="#" onClick={this.displayNewAuction}>New Auction</a>
             </li>            
           </ul>
           <form className="form-inline my-2 my-lg-0">
@@ -151,11 +151,35 @@ class AuctionPage extends Component {
   };
 
   render() {
+    let title = '';
+    switch (this.state.display) {
+      case this.NEW_AUCTION:
+        title = 'New Auction'
+        break;
+      case this.CURRENT_AUCTIONS:
+        title = 'Current Auctions'
+        break;  
+      case this.MYSETTINGS:
+        title = 'Settings'
+        break; 
+      case this.ALL_AUCTIONS:
+        title = 'All Auctions'
+        break;          
+      case this.EDIT_AUCTION:
+          title = 'Edit Auction'
+          break;                 
+      default:
+       title = 'All Auctions'
+        break;
+    }    
     return (
-      <div>
+      <React.Fragment>
         {this.getNavBar()}
-        <div className="container mt-3">{this.display()}</div>
-      </div>
+        <div className="container mt-3">
+        <h2>{title}</h2>
+          {this.display()}
+        </div>
+      </React.Fragment>
     );
   }
 }

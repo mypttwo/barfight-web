@@ -1,22 +1,26 @@
 import React, { Component } from "react";
-import axios from 'axios';
 
-import {server} from '../../config';
 import Registration from '../Registration/registration';
 import Login from '../Login/login';
 import AdminLogin from '../AdminLogin/adminlogin';
 import BarAdminLogin from '../BarAdminLogin/baradminlogin';
 import HomePageAuctionList from '../HomePageAuctionList/auctionList';
 
-import d from '../../utils/dictionary';
+import Navbar from "../Navbar/navbar";
+
+
 
 
 class HomePage extends Component {
+
+
   HOME = 1;
   RULES = 2;
   BARLOGIN = 3;
   REGISTRATION = 4;
   ADMIN = 5;
+
+  
 
   state = {
     display: this.HOME
@@ -97,51 +101,23 @@ class HomePage extends Component {
   }
 
   getRecentContent = () => {
-    return (
-      <HomePageAuctionList />     
-    );
+    return <HomePageAuctionList/>;
   }
 
-  render() {
-    let style = {
-      "backgroundImage" : "url('/images/c6.jpg')"
-    }
+  render(){
+
     return (
-      <div className="pb-5" style={style}>
-        <div className="text-center">
-          <div className="container d-flex h-100 p-3 mx-auto flex-column">
-            <header className="mb-auto">
-              <div className="inner">
-                {/* <h3 className=" text-white">{d.appTitle}</h3> */}
-                <nav className="nav justify-content-center">
-                  <a className="nav-link active" href="#" onClick={this.displayHome}>
-                    Home
-                  </a>
-                  <a className="nav-link" href="#" onClick={this.displayBarLogin}>
-                    Partners
-                  </a>
-                </nav>
-              </div>
-              <img className="img-fluid" src="images/l1.png" />
-            </header>
-            {this.display()}
-          </div>
+      <React.Fragment>
+        <div>
+          <Navbar 
+          displayHome={this.displayHome}
+          displayBarLogin={this.displayBarLogin}/>
+          {this.display()}
+          {this.getRecentContent()} 
         </div>
-        <div className="container">
-        {this.getRecentContent()}          
-        </div>
-        <footer className="footer">
-          <div className="container text-center">
-            <nav className="nav justify-content-center">
-              <a className="nav-link small" href="#" onClick={this.displayRules}>
-                Terms and Conditions
-              </a>
-            </nav>
-          </div>
-        </footer>
-      </div>
-    );
+      </React.Fragment>      
+    )
   }
 }
 
-export default HomePage;
+export default HomePage ;
